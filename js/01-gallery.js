@@ -24,6 +24,13 @@ function createImageGallery(itemList) {
     .join("");
 }
 
+const onEscClick = function (event) {
+  if (event.code === "Escape") {
+    instance.close();
+    return;
+  }
+};
+
 function galleryModalOpenClose(event) {
   event.preventDefault();
 
@@ -33,14 +40,11 @@ function galleryModalOpenClose(event) {
   }
   const instance = basicLightbox.create(`
       <img src='${event.target.dataset.source}'
-      />`);
-    instance.show();
-    
-     const CloseByEscape = function (event) {
-    if (event.code === "Escape") {
-      instance.close();
-      document.removeEventListener("keydown", CloseByEscape);
-    }
-  };
-  document.addEventListener("keydown", CloseByEscape);
+      />`,
+    {
+      onShow: instance => {window.addEventListener('keydown', onEscClick);},
+      onClose: instance => {window.removeEventListener('keydown', onEscClick);},
+    });
+  
+  instance.show();
 }
